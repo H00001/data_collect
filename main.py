@@ -5,7 +5,18 @@ import datetime
 from pandas import DataFrame
 
 
-# 百度的
+def get_config():
+    config_file = open("source.cfg")
+    dict_temp = {}
+    try:
+        for line in config_file:
+            line = line.replace("\n", '')
+            k = line.split("===")[0]
+            v = line.split("===")[1]
+            dict_temp[k] = v
+    finally:
+        config_file.close()
+    return dict_temp
 
 
 def a(end, s000, u, l, since_id=""):
@@ -49,28 +60,8 @@ def tran(t):
         return t
 
 
-def baidu(start, end):
-    u = "https://m.weibo.cn/api/container/getIndex?type=uid&value=1799201635&containerid=1076031799201635&since_id="
-
-    rk, p = a(start, end, u, [], '')
-    datas = []
-    for i in range(len(rk)):
-        (m, b, c, d, t, u) = rk[i]
-        datas.append(
-            {'title': u, 'comments_count': m, 'attitudes_count': b, 'pending_approval_count': c, 'reposts_count': d,
-             'time': t, 'cal': m + b + c + d})
-
-    file_path = './百度微博汇总数据.xlsx'
-    DataFrame(datas).to_excel(file_path, sheet_name='Sheet1', index=False,
-                              columns=['title', 'comments_count', 'attitudes_count', 'pending_approval_count',
-                                       'reposts_count', 'time',
-                                       'cal'])
-
-
-def gaode(start, end):
-    u = "https://m.weibo.cn/api/container/getIndex?type=uid&value=1661169385&containerid=1076031661169385&since_id="
-
-    rk, p = a(start, end, u, [], '')
+def get_data_and_write(start, end, sour):
+    rk, p = a(start, end, get_config()[sour], [], '')
 
     datas = []
     for i in range(len(rk)):
@@ -79,8 +70,8 @@ def gaode(start, end):
             {'title': u, 'comments_count': m, 'attitudes_count': b, 'pending_approval_count': c, 'reposts_count': d,
              'time': t, 'cal': m + b + c + d})
 
-    file_path = './高德微博汇总数据.xlsx'
-    DataFrame(datas).to_excel(file_path, sheet_name='Sheet1', index=False,
+    file_path = './' + sour + '.xlsx'
+    DataFrame(datas).to_excel(file_path, sheet_name=sour, index=False,
                               columns=['title', 'comments_count', 'attitudes_count', 'pending_approval_count',
                                        'reposts_count', 'time',
                                        'cal'])
@@ -89,5 +80,5 @@ def gaode(start, end):
 if __name__ == '__main__':
     start = "2020-12-10"
     end = "2020-12-16"
-    baidu(start, end)
-    gaode(start, end)
+    get_data_and_write(start, end, "gaode")
+    get_data_and_write(start, end, "baidu")
