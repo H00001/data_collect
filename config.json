@@ -1,0 +1,13 @@
+{ 
+    "time_start":"2021-2-10",
+    "time_end":"2021-2-18",
+    "lists":[{
+        "name":"baidu",
+        "enable":true,
+        "url" :"https://m.weibo.cn/api/container/getIndex?type=uid&value=1799201635&containerid=1076031799201635&since_id="
+            },{
+        "name":"gaode",
+        "enable":true,
+        "url" :"https://m.weibo.cn/api/container/getIndex?type=uid&value=1661169385&containerid=1076031661169385&since_id="
+            }]
+}
