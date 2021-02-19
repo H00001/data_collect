@@ -19,8 +19,9 @@ def get_config():
     return dict_temp
 
 
-def a(end, s000, u, l, since_id=""):
-    print("loading... please wait")
+def a(end, s000, u, l, lfrom,since_id=""):
+    n = since_id
+    print("loading... from:" + lfrom + " since_id:" + since_id)
     j = json.loads(requests.get(u + since_id).text)
     v = j['data']['cards']
     since_id = str(j['data']['cardlistInfo']['since_id'])
@@ -28,11 +29,14 @@ def a(end, s000, u, l, since_id=""):
     e = int(time.mktime(time.strptime(end, "%Y-%m-%d")))
     s001 = int(time.mktime(time.strptime(s000, "%Y-%m-%d")))
     for i in v:
-        if not 'mblog' in i:
+        if i["card_type"] != 9:
             continue
         k = i['mblog']
         d465 = str(k['created_at'])
         s = int(time.mktime(time.strptime(d465, "%a %b %d %H:%M:%S %z %Y")))
+        if n == '':
+            if s < e:
+                continue
         if s < e:
             break
         elif s > s001:
@@ -42,13 +46,13 @@ def a(end, s000, u, l, since_id=""):
         l.append((v1, v2, v3, v4, k['created_at'], True))
         sv1, sv2, sv3, sv4 = sv1 + v1, sv2 + v2, sv3 + v3, sv4 + v4
     if s >= e:
-        rk, (_a, _b, _c, _d) = a(end, s000, u, l, since_id)
+        rk, (_a, _b, _c, _d) = a(end, s000, u, l, lfrom,since_id)
         sv1, sv2, sv3, sv4 = sv1 + _a, sv2 + _b, sv3 + _c, sv4 + _d
     return l, (sv1, sv2, sv3, sv4)
 
 
 def get_data_and_write(start, end, sour):
-    rk, p = a(start, end, get_config()[sour], [], '')
+    rk, p = a(start, end, get_config()[sour], [], sour,'')
 
     datas = []
     for i in range(len(rk)):
@@ -65,7 +69,7 @@ def get_data_and_write(start, end, sour):
 
 
 if __name__ == '__main__':
-    start = "2020-12-10"
-    end = "2020-12-16"
+    start = "2021-02-10"
+    end = "2021-02-18"
     get_data_and_write(start, end, "gaode")
     get_data_and_write(start, end, "baidu")
