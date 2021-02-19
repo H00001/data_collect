@@ -34,16 +34,15 @@ def a(end, s000, u, l, lfrom,since_id=""):
         k = i['mblog']
         d465 = str(k['created_at'])
         s = int(time.mktime(time.strptime(d465, "%a %b %d %H:%M:%S %z %Y")))
-        if n == '':
-            if s < e:
-                continue
+        if n == '' and s < e:
+            continue
         if s < e:
             break
         elif s > s001:
             continue
         v1, v2, v3, v4 = int(k['comments_count']), int(k['attitudes_count']), int(k['pending_approval_count']), int(
             k['reposts_count'])
-        l.append((v1, v2, v3, v4, k['created_at'], True))
+        l.append((v1, v2, v3, v4, k['created_at'], k['text'][0:5]))
         sv1, sv2, sv3, sv4 = sv1 + v1, sv2 + v2, sv3 + v3, sv4 + v4
     if s >= e:
         rk, (_a, _b, _c, _d) = a(end, s000, u, l, lfrom,since_id)
